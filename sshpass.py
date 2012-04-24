@@ -22,6 +22,14 @@ def getpassword(service, username):
 
     return password
 
+def gettermsize():
+    ''' horrible non-portable hack to get the terminal size to transmit
+        to the child process spawned by pexpect '''
+    (rows, cols) = os.popen("stty size").read().split() # works on Mac OS X, YMMV
+    rows = int(rows)
+    cols = int(cols)
+    return (rows, cols)
+
 def setpassword(service, username, password):
     ''' Save password in keychain '''
 
@@ -39,6 +47,9 @@ def ssh(username, host, keychainservice="ssh_py_default", port=22):
 
     cmd = "/usr/bin/ssh -p%d %s@%s" % (port, username, host)
     child = pexpect.spawn(cmd)
+
+    (rows, cols) = gettermsize()
+    child.setwinsize(rows, cols) # set the child to the size of the user's term
 
     # handle the host acceptance and password crap.
     i = child.expect(['Are you sure you want to continue connecting (yes/no)?', 'assword:'])
