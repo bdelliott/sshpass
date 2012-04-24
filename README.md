@@ -10,8 +10,7 @@ Requires:
 
 * Python
 * pip (or easy_install)
-
-pip install pexpect
-pip install keyring
+* pip install pexpect
+* pip install keyring
 
 
